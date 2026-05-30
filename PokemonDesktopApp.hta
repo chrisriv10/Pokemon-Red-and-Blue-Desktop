@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Pokemon Red and Blue</title>
+  <HTA:APPLICATION
+    ID="PokemonDesktopApp"
+    APPLICATIONNAME="Pokemon Red and Blue"
+    BORDER="thin"
+    CAPTION="yes"
+    ICON="pokemon-logo.ico"
+    MAXIMIZEBUTTON="yes"
+    MINIMIZEBUTTON="yes"
+    SCROLL="no"
+    SINGLEINSTANCE="yes"
+    SYSMENU="yes"
+    WINDOWSTATE="normal" />
+  <style>
+    html,
+
+/* HTML UI LAYOUT */
+
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #1d4f9a;
+      color: #172033;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 14px;
+    }
+
+    .app {
+      box-sizing: border-box;
+      height: 100%;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #1d4f9a;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 56px;
+      border: 3px solid #172033;
+      border-radius: 8px;
+      padding: 8px 12px;
+      background: #f6cf31;
+      box-shadow: 0 3px 0 #172033;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 32px;
+      letter-spacing: 0;
+      color: #d62828;
+      text-shadow: 1px 1px 0 #ffffff, 2px 2px 0 #172033;
+    }
+
+    .subtitle {
+      display: none;
+    }
+
+    .trainer {
+      text-align: right;
+      color: #172033;
+      font-weight: 700;
+      font-size: 17px;
+    }
+
+    .layout {
+      min-height: 0;
+      flex: 1;
+      display: flex;
+      gap: 10px;
+    }
+
+    .main {
+      flex: 1;
+      min-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .side {
+      width: 310px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .panel {
+      background: #fff8df;
+      border: 3px solid #172033;
+      border-radius: 8px;
+      box-shadow: 0 3px 0 #172033;
+      padding: 12px;
+    }
+
+    .hero {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .field {
+      flex: 1;
+      min-width: 160px;
+      height: 40px;
+      box-sizing: border-box;
+      border: 2px solid #172033;
+      border-radius: 6px;
+      padding: 0 10px;
+      font-size: 16px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button {
+      border: 2px solid #172033;
+      border-radius: 6px;
+      background: #d62828;
+      color: #ffffff;
+      min-height: 40px;
+      padding: 0 14px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: "Segoe UI", Arial, sans-serif;
+      box-shadow: 0 2px 0 #172033;
+    }
+
+    button:hover {
+      background: #ef3d3d;
+    }
+
+    button.secondary {
+      background: #2c6fbb;
+      color: #ffffff;
+    }
+
+    button.secondary:hover {
+      background: #3d86d6;
+    }
+
+    button.danger {
+      background: #172033;
+      border-color: #172033;
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .section-title {
+      margin: 0 0 7px;
+      color: #d62828;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .statline,
+    .inventory-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 2px solid #f1d889;
+      padding: 8px 0;
+      font-size: 15px;
+    }
+
+    .statline:last-child,
+    .inventory-line:last-child {
+      border-bottom: 0;
+    }
+
+    .muted {
+      color: #5b6473;
+    }
+
+    .screen {
+      min-height: 0;
+      flex: 1;
+      overflow: auto;
+    }
+
+    .log {
+      height: 100%;
+      box-sizing: border-box;
+      overflow: auto;
+      background: #10284a;
+      color: #fff8df;
+      border: 3px solid #172033;
+      border-radius: 8px;
+      padding: 16px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 30px;
+      box-shadow: inset 0 0 0 2px #2c6fbb;
+    }
+
+    .log-line {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .log-system {
+      color: #fff8df;
+    }
+
+    .log-battle {
+      color: #f6cf31;
+      font-weight: 700;
+    }
+
+    .log-player {
+      color: #91c8ff;
+    }
+
+    .log-enemy {
+      color: #ff9b54;
+    }
+
+    .log-win,
+    .log-catch,
+    .log-heal {
+      color: #66f28a;
+      font-weight: 700;
+    }
+
+    .log-loss {
+      color: #ff6b6b;
+      font-weight: 700;
+    }
+
+    .log-item,
+    .log-shop {
+      color: #7df2ff;
+    }
+
+    .choice-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .pokemon-card {
+      border: 2px solid #172033;
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 7px;
+      background: #ffffff;
+    }
+
+    .pokemon-card.active {
+      border-color: #d62828;
+      background: #ffe98a;
+    }
+
+    .pokemon-name {
+      font-weight: 800;
+      color: #172033;
+      margin-bottom: 4px;
+    }
+
+    .battle-display {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .battle-row {
+      display: flex;
+    }
+
+    .battle-row.player {
+      justify-content: flex-end;
+    }
+
+    .battle-status {
+      width: 58%;
+      min-width: 230px;
+      box-sizing: border-box;
+      border: 2px solid #172033;
+      border-radius: 8px;
+      padding: 8px;
+      background: #ffffff;
+      box-shadow: 0 2px 0 #172033;
+    }
+
+    .battle-row.player .battle-status {
+      background: #e8f3ff;
+    }
+
+    .battle-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-weight: 800;
+      color: #172033;
+      margin-bottom: 6px;
+    }
+
+    .hp-meta {
+      color: #5b6473;
+      font-weight: 700;
+    }
+
+    .hp-bar {
+      height: 12px;
+      overflow: hidden;
+      border: 2px solid #172033;
+      border-radius: 6px;
+      background: #d9dce3;
+    }
+
+    .hp-fill {
+      height: 100%;
+      background: #35b65a;
+    }
+
+    .hp-fill.warning {
+      background: #f6cf31;
+    }
+
+    .hp-fill.danger {
+      background: #d62828;
+    }
+
+    .battle-items {
+      margin-top: 6px;
+      color: #5b6473;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .battle {
+      border-left: 8px solid #d62828;
+    }
+
+    @media (max-width: 760px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .side {
+        width: auto;
+      }
+
+      .main {
+        min-width: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div>
+        <h1>Pokemon Red and Blue</h1>
+      </div>
+      <div class="trainer" id="trainerStatus">New trainer</div>
+    </div>
+
+    <div class="layout">
+      <div class="main">
+        <div class="panel" id="controls"></div>
+        <div class="screen">
+          <div class="log" id="log"></div>
+        </div>
+      </div>
+
+      <div class="side">
+        <div class="panel">
+          <div class="section-title">Active Pokemon</div>
+          <div id="activePokemon"></div>
+        </div>
+        <div class="panel">
+          <div class="section-title">Inventory</div>
+          <div id="inventory"></div>
+        </div>
+        <div class="panel">
+          <div class="section-title">Pokemon Team</div>
+          <div id="team"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script type="text/javascript">
+    function Attack(name, power) {
+      this.name = name;
+      this.power = power;
+    }
+
+ /* JAVASCRIPT GAME LOGIC/RENDERING */
+
+  function Pokemon(name, hp, attack, defense, moves) {
+  this.name = name;
+  this.hp = hp;
+  this.maxHP = hp;
+  this.attack = attack;
+  this.defense = defense;
+  this.moves = moves || [];
+}
+
+function makePokemon(name) {
+  if (name === "Bulbasaur") {
+    return new Pokemon("Bulbasaur", 45, 50, 50, [
+      new Attack("Tackle", 10),
+      new Attack("Vine Whip", 15)
+    ]);
+  }
+  if (name === "Charmander") {
+    return new Pokemon("Charmander", 40, 50, 45, [
+      new Attack("Scratch", 10),
+      new Attack("Ember", 18)
+    ]);
+  }
+  if (name === "Squirtle") {
+    return new Pokemon("Squirtle", 45, 50, 65, [
+      new Attack("Tackle", 15),
+      new Attack("Water Gun", 20)
+    ]);
+  }
+  if (name === "Onix") {
+    return new Pokemon("Onix", 90, 100, 120, [
+      new Attack("Rock Throw", 20),
+      new Attack("Tackle", 15),
+      new Attack("Bind", 10),
+      new Attack("Iron Tail", 25)
+    ]);
+  }
+  if (name === "Mew") {
+    return new Pokemon("Mew", 150, 100, 100, [
+      new Attack("Psystrike", 40),
+      new Attack("Aura Sphere", 35),
+      new Attack("Metronome", 50)
+    ]);
+  }
+  if (name === "Pidgey") {
+    return new Pokemon("Pidgey", 30, 20, 15, [
+      new Attack("Gust", 12)
+    ]);
+  }
+  if (name === "Rattata") {
+    return new Pokemon("Rattata", 25, 25, 10, [
+      new Attack("Quick Attack", 10)
+    ]);
+  }
+  if (name === "Caterpie") {
+    return new Pokemon("Caterpie", 20, 10, 5, [
+      new Attack("String Shot", 5)
+    ]);
+  }
+  if (name === "Pikachu") {
+    return new Pokemon("Pikachu", 35, 55, 30, [
+      new Attack("Thunder Shock", 15),
+      new Attack("Quick Attack", 12)
+    ]);
+  }
+
+  if (name === "Jigglypuff") {
+    return new Pokemon("Jigglypuff", 115, 45, 20, [
+      new Attack("Pound", 10),
+      new Attack("Sing", 0)
+    ]);
+  }
+
+  if (name === "Geodude") {
+    return new Pokemon("Geodude", 40, 80, 100, [
+      new Attack("Rock Throw", 18),
+      new Attack("Tackle", 10)
+    ]);
+  }
+
+  if (name === "Machop") {
+    return new Pokemon("Machop", 70, 80, 50, [
+      new Attack("Karate Chop", 20),
+      new Attack("Low Kick", 18)
+    ]);
+  }
+
+  if (name === "Abra") {
+    return new Pokemon("Abra", 25, 20, 15, [
+      new Attack("Confusion", 25)
+    ]);
+  }
+
+  if (name === "Oddish") {
+    return new Pokemon("Oddish", 45, 50, 55, [
+      new Attack("Absorb", 10),
+      new Attack("Acid", 12)
+    ]);
+  }
+
+  if (name === "Diglett") {
+    return new Pokemon("Diglett", 30, 55, 25, [
+      new Attack("Scratch", 10),
+      new Attack("Dig", 25)
+    ]);
+  }
+
+  if (name === "Eevee") {
+    return new Pokemon("Eevee", 55, 55, 50, [
+      new Attack("Tackle", 10),
+      new Attack("Bite", 15)
+    ]);
+  }
+
+  if (name === "Magikarp") {
+    return new Pokemon("Magikarp", 20, 10, 55, [
+      new Attack("Splash", 0),
+      new Attack("Tackle", 5)
+    ]);
+  }
+
+  return new Pokemon("Weedle", 22, 12, 7, [
+    new Attack("Poison Sting", 6)
+  ]);
+}
+
+/* TRACKS TRAINER STATS/INVENTORY/POKEMON */
+
+    var state = {
+      trainerName: "",
+      money: 30,
+      pokeballs: 3,
+      potions: 0,
+      berries: 0,
+      team: [],
+      activeIndex: 0,
+      battle: null,
+      gymDefeated: false,
+      log: []
+    };
+
+    function byId(id) {
+      return document.getElementById(id);
+    }
+
+    function activePokemon() {
+      return state.team[state.activeIndex] || null;
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function write(message, type) {
+      state.log.push({
+        text: message,
+        type: type || "system"
+      });
+      if (state.log.length > 80) {
+        state.log.shift();
+      }
+      renderLog();
+    }
+
+/* RENDERING FUNCTIONS */
+
+    function renderLog() {
+      var html = "";
+      for (var i = 0; i < state.log.length; i++) {
+        var entry = state.log[i];
+        html += "<span class=\"log-line log-" + entry.type + "\">" + escapeHtml(entry.text) + "</span>";
+      }
+
+      byId("log").innerHTML = html;
+      byId("log").scrollTop = byId("log").scrollHeight;
+    }
+
+    function clearLog() {
+      state.log = [];
+      byId("log").innerHTML = "";
+    }
+
+    function button(label, action, className, disabled) {
+      return "<button " + (disabled ? "disabled " : "") + "class=\"" + (className || "") + "\" onclick=\"" + action + "\">" + label + "</button>";
+    }
+
+    function render() {
+      byId("trainerStatus").innerHTML = state.trainerName ? state.trainerName + " | $" + state.money : "New trainer";
+      renderActive();
+      renderInventory();
+      renderTeam();
+      if (state.battle) {
+        renderBattleControls();
+      } else if (!state.trainerName) {
+        renderWelcome();
+      } else if (!activePokemon()) {
+        renderStarterChoice();
+      } else {
+        renderMainMenu();
+      }
+    }
+
+    function renderWelcome() {
+      byId("controls").className = "panel";
+      byId("controls").innerHTML =
+        "<div class=\"hero\">" +
+        "<input class=\"field\" id=\"trainerNameInput\" placeholder=\"Enter your trainer name\" />" +
+        button("Start", "startGame()", "", false) +
+        "</div>";
+    }
+
+    function renderStarterChoice() {
+      byId("controls").className = "panel";
+      byId("controls").innerHTML =
+        "<div class=\"section-title\">Choose your starter</div>" +
+        "<div class=\"choice-grid\">" +
+        button("Bulbasaur", "chooseStarter('Bulbasaur')", "", false) +
+        button("Charmander", "chooseStarter('Charmander')", "", false) +
+        button("Squirtle", "chooseStarter('Squirtle')", "", false) +
+        "</div>";
+    }
+
+    function renderMainMenu() {
+      byId("controls").className = "panel";
+      byId("controls").innerHTML =
+        "<div class=\"section-title\">What do you want to do?</div>" +
+        "<div class=\"actions\">" +
+        button("Explore", "explore()", "", false) +
+        button("Train", "train()", "", false) +
+        button("Poke Mart", "showMart()", "secondary", false) +
+        button("Poke Center", "showCenter()", "secondary", false) +
+        button("Pewter City Gym", "challengeGym()", "secondary", false) +
+        button("New Game", "newGame()", "danger", false) +
+        "</div>";
+    }
+
+    function hpPercent(pokemon) {
+      if (!pokemon || pokemon.maxHP <= 0) {
+        return 0;
+      }
+      return Math.max(0, Math.min(100, Math.round((pokemon.hp / pokemon.maxHP) * 100)));
+    }
+
+    function hpClass(pokemon) {
+      var percent = hpPercent(pokemon);
+      if (percent <= 25) {
+        return "danger";
+      }
+      if (percent <= 50) {
+        return "warning";
+      }
+      return "";
+    }
+
+    function renderBattlePokemon(pokemon, label, isPlayer) {
+      var percent = hpPercent(pokemon);
+      var fillClass = hpClass(pokemon);
+      var html = "<div class=\"battle-row " + (isPlayer ? "player" : "opponent") + "\">";
+      html += "<div class=\"battle-status\">";
+      html += "<div class=\"battle-label\"><span>" + escapeHtml(label) + ": " + escapeHtml(pokemon.name) + "</span>";
+      html += "<span class=\"hp-meta\">HP " + pokemon.hp + "/" + pokemon.maxHP + "</span></div>";
+      html += "<div class=\"hp-bar\"><div class=\"hp-fill " + fillClass + "\" style=\"width:" + percent + "%\"></div></div>";
+      if (isPlayer) {
+        html += "<div class=\"battle-items\">Potions " + state.potions + " | Berries " + state.berries + " | Pokeballs " + state.pokeballs + "</div>";
+      }
+      html += "</div></div>";
+      return html;
+    }
+
+    function renderBattle() {
+      if (!state.battle || !activePokemon()) {
+        return "";
+      }
+
+      return "<div class=\"battle-display\">" +
+        renderBattlePokemon(state.battle.wild, "Opponent", false) +
+        renderBattlePokemon(activePokemon(), "You", true) +
+        "</div>";
+    }
+
+    function renderBattleControls() {
+      var battle = state.battle;
+      var html = "<div class=\"section-title\">Battle: " + activePokemon().name + " vs. " + battle.wild.name + "</div>";
+      html += renderBattle();
+      html += "<div class=\"actions\">";
+      for (var i = 0; i < activePokemon().moves.length; i++) {
+        html += button(activePokemon().moves[i].name, "attack(" + i + ")", "", false);
+      }
+      html += button("Potion", "usePotion()", "secondary", state.potions <= 0);
+      html += button("Berry", "useBerry()", "secondary", state.berries <= 0);
+      html += button("Catch", "catchPokemon()", "secondary", state.pokeballs <= 0 || battle.isGym);
+      html += button("Run", "runAway()", "danger", battle.isGym);
+      html += "</div>";
+      byId("controls").className = "panel battle";
+      byId("controls").innerHTML = html;
+    }
+
+    function renderActive() {
+      var p = activePokemon();
+      if (!p) {
+        byId("activePokemon").innerHTML = "<div class=\"muted\">No active Pokemon yet.</div>";
+        return;
+      }
+      byId("activePokemon").innerHTML =
+        "<div class=\"statline\"><span>Name</span><strong>" + p.name + "</strong></div>" +
+        "<div class=\"statline\"><span>HP</span><strong>" + p.hp + " / " + p.maxHP + "</strong></div>" +
+        "<div class=\"statline\"><span>ATK</span><strong>" + p.attack + "</strong></div>" +
+        "<div class=\"statline\"><span>DEF</span><strong>" + p.defense + "</strong></div>";
+    }
+
+    function renderInventory() {
+      byId("inventory").innerHTML =
+        "<div class=\"inventory-line\"><span>Money</span><strong>$" + state.money + "</strong></div>" +
+        "<div class=\"inventory-line\"><span>Pokeballs</span><strong>" + state.pokeballs + "</strong></div>" +
+        "<div class=\"inventory-line\"><span>Potions</span><strong>" + state.potions + "</strong></div>" +
+        "<div class=\"inventory-line\"><span>Berries</span><strong>" + state.berries + "</strong></div>";
+    }
+
+    function renderTeam() {
+      if (state.team.length === 0) {
+        byId("team").innerHTML = "<div class=\"muted\">Choose a starter to begin.</div>";
+        return;
+      }
+
+      var html = "";
+      for (var i = 0; i < state.team.length; i++) {
+        var p = state.team[i];
+        var className = i === state.activeIndex ? "pokemon-card active" : "pokemon-card";
+        html += "<div class=\"" + className + "\">";
+        html += "<div class=\"pokemon-name\">" + p.name + "</div>";
+        html += "<div class=\"muted\">HP " + p.hp + "/" + p.maxHP + " | ATK " + p.attack + " | DEF " + p.defense + "</div>";
+        if (!state.battle && i !== state.activeIndex) {
+          html += "<div style=\"margin-top:8px\">" + button("Set Active", "chooseActivePokemon(" + i + ")", "secondary", false) + "</div>";
+        }
+        html += "</div>";
+      }
+      byId("team").innerHTML = html;
+    }
+
+    
+
+    function startGame() {
+      var name = byId("trainerNameInput").value;
+      if (!name || name.replace(/\s/g, "") === "") {
+        name = "Trainer";
+      }
+      state.trainerName = name;
+      clearLog();
+      write("Welcome to Pokemon Red and Blue, " + state.trainerName + ".", "system");
+      write("Professor Oak: Choose your first Pokemon.", "system");
+      render();
+    }
+
+    function chooseStarter(name) {
+      var starter = makePokemon(name);
+      state.team.push(starter);
+      state.activeIndex = 0;
+      write("You selected " + starter.name + ".", "player");
+      write("Your journey begins.", "system");
+      render();
+    }
+
+    function chooseActivePokemon(index) {
+      if (index < 0 || index >= state.team.length || state.battle) {
+        return;
+      }
+
+      state.activeIndex = index;
+      write(state.team[index].name + " is now your active Pokemon.", "player");
+      render();
+    }
+
+    function randomFrom(items) {
+      return items[Math.floor(Math.random() * items.length)];
+    }
+
+    function explore() {
+      byId("controls").className = "panel";
+      var roll = Math.floor(Math.random() * 101);
+      write("You explore the wilderness.", "system");
+      if (roll === 100) {
+        startBattle(makePokemon("Mew"), false);
+      } else if (roll > 50) {
+        startBattle(makePokemon(randomFrom(["Pidgey", "Rattata", "Caterpie", "Weedle","Pikachu", "Jigglypuff", "Geodude", "Machop","Abra", "Oddish", "Diglett", "Eevee", "Magikarp"])), false);
+      } else if (roll > 25) {
+        write("Nothing eventful happened.", "system");
+      } else if (roll > 12) {
+        state.berries++;
+        write("You found a berry.", "item");
+      } else if (roll > 5) {
+        state.pokeballs++;
+        write("You found a Pokeball.", "item");
+      } else {
+        state.potions++;
+        write("You found a potion.", "item");
+      }
+      render();
+    }
+
+    function train() {
+      var p = activePokemon();
+      if (Math.random() < 0.25) {
+        p.maxHP += 3;
+        p.hp += 3;
+        p.attack += 3;
+        p.defense += 3;
+        write(p.name + " trained hard and increased its stats!", "win");
+      } else {
+        write("Training had no effect this time.", "system");
+      }
+      render();
+    }
+
+    function showMart(showMessage){
+      if (showMessage === undefined) {
+        showMessage = true;
+      }
+      byId("controls").className = "panel";
+      byId("controls").innerHTML =
+        "<div class=\"section-title\">Poke Mart</div>" +
+        "<div class=\"actions\">" +
+        button("Buy Potion - $10", "buyPotion()", "", state.money < 10) +
+        button("Buy Pokeball - $5", "buyPokeball()", "", state.money < 5) +
+        button("Back", "render()", "secondary", false) +
+        "</div>";
+        if (showMessage) {
+          write("You make your way to the nearest Poke Mart.", "shop");
+        }
+    }
+
+    function buyPotion() {
+      if (state.money >= 10) {
+        state.money -= 10;
+        state.potions++;
+        write("You purchased a potion.", "shop");
+      }
+      showMart(false);
+      renderInventory();
+    }
+
+    function buyPokeball() {
+      if (state.money >= 5) {
+        state.money -= 5;
+        state.pokeballs++;
+        write("You purchased a Pokeball.", "shop");
+      }
+      showMart(false);
+      renderInventory();
+    }
+
+    function showCenter() {
+      for (var i = 0; i < state.team.length; i++) {
+        state.team[i].hp = state.team[i].maxHP;
+      }
+      write("You make your way to the nearest Poke Center.", "shop");
+      write("Nurse Joy healed all of your Pokemon to full HP.", "heal");
+      render();
+    }
+
+    function challengeGym() {
+      if (state.gymDefeated) {
+        write("Brock has already given you the Pewter Gym reward.", "system");
+        return;
+      }
+      write("Brock: Welcome, Trainer. Let's battle!", "battle");
+      startBattle(makePokemon("Onix"), true);
+    }
+
+    function startBattle(wild, isGym) {
+      state.battle = { wild: wild, isGym: isGym };
+      write("Battle start: your " + activePokemon().name + " vs. " + wild.name + ".", "battle");
+      render();
+    }
+
+    function attack(moveIndex) {
+      var p = activePokemon();
+      var wild = state.battle.wild;
+      var move = p.moves[moveIndex];
+      wild.hp -= move.power;
+      if (wild.hp < 0) {
+        wild.hp = 0;
+      }
+      write(p.name + " used " + move.name + " for " + move.power + " damage.", "player");
+      if (wild.hp <= 0) {
+        winBattle();
+        return;
+      }
+      wildTurn();
+    }
+
+    function wildTurn() {
+      var p = activePokemon();
+      var wild = state.battle.wild;
+      var move = randomFrom(wild.moves);
+      p.hp -= move.power;
+      if (p.hp < 0) {
+        p.hp = 0;
+      }
+      write(wild.name + " used " + move.name + " for " + move.power + " damage.", "enemy");
+      if (p.hp <= 0) {
+        write(p.name + " fainted. You lost the battle.", "loss");
+        state.battle = null;
+      }
+      render();
+    }
+
+    function winBattle() {
+      var wild = state.battle.wild;
+      var isGym = state.battle.isGym;
+      write(wild.name + " fainted. You won the battle!", "win");
+      state.battle = null;
+      if (isGym) {
+        state.gymDefeated = true;
+        state.money += 50;
+        state.team.push(makePokemon("Onix"));
+        write("Brock gave you $50 and an Onix.", "win");
+      }
+      render();
+    }
+
+    function usePotion() {
+      var p = activePokemon();
+      if (state.potions <= 0) {
+        write("You are out of potions!", "loss");
+        render();
+        return;
+      }
+      state.potions--;
+      p.hp = Math.min(p.maxHP, p.hp + 20);
+      write(p.name + " recovered 20 HP.", "heal");
+      wildTurn();
+    }
+
+    function useBerry() {
+      var p = activePokemon();
+      if (state.berries <= 0) {
+        write("You are out of berries!", "loss");
+        render();
+        return;
+      }
+      state.berries--;
+      p.hp = Math.min(p.maxHP, p.hp + 10);
+      write(p.name + " recovered 10 HP.", "heal");
+      wildTurn();
+    }
+
+    function catchPokemon() {
+      var wild = state.battle.wild;
+      if (state.pokeballs <= 0) {
+        write("You are out of Pokeballs!", "loss");
+        render();
+        return;
+      }
+      state.pokeballs--;
+      if (Math.random() < 0.25) {
+        state.team.push(wild);
+        write("You caught " + wild.name + "!", "catch");
+        state.battle = null;
+        render();
+      } else {
+        write("You failed to catch " + wild.name + "!", "loss");
+        wildTurn();
+      }
+    }
+
+    function runAway() {
+      write("You ran away!", "system");
+      state.battle = null;
+      render();
+    }
+
+    function newGame() {
+      if (!confirm("Start a new game?")) {
+        return;
+      }
+      state = {
+        trainerName: "",
+        money: 30,
+        pokeballs: 3,
+        potions: 0,
+        berries: 0,
+        team: [],
+        activeIndex: 0,
+        battle: null,
+        gymDefeated: false,
+        log: []
+      };
+      clearLog();
+      byId("controls").className = "panel";
+      render();
+    }
+
+    window.onload = function () {
+      setTimeout(write, 500, "Starting game.", "system");
+      setTimeout(clearLog, 1500);
+      setTimeout(write, 1501, "Starting game..", "system");
+      setTimeout(clearLog, 2500);
+      setTimeout(write, 2501, "Starting game...", "system");
+      setTimeout(clearLog, 3500);
+      setTimeout(write, 3501, "Game Loaded.", "heal");
+      setTimeout(clearLog, 4500);
+      setTimeout(write, 4501, "Welcome to Pokemon Red and Blue!", "shop");
+      setTimeout(write, 5200, ""
++ "                                  ,'\\\n"
++ "    _.----.        ____         ,'  _\\   ___    ___     ____\n"
++ "_,-'       `.     |    |  /`.   \\,-'    |   \\  /   |   |    \\  |`.\n"
++ "\\      __    \\    '-.  | /   `.  ___    |    \\/    |   '-.   \\ |  |\n"
++ " \\.    \\ \\   |  __  |  |/    ,','_  `.  |          | __  |    \\|  |\n"
++ "   \\    \\/   /,' _`.|      ,' / / / /   |          ,' _`.|     |  |\n"
++ "    \\     ,-'/  /   \\    ,'   | \\/ / ,`.|         /  /   \\  |     |\n"
++ "     \\    \\ |   \\_/  |   `-.  \\    `'  /|  |    ||   \\_/  | |\\    |\n"
++ "      \\    \\ \\      /       `-.`.___,-' |  |\\  /| \\      /  | |   |\n"
++ "       \\    \\ `.__,'|  |`-._    `|      |__| \\/ |  `.__,'|  | |   |\n"
++ "        \\_.-'       |__|    `-._ |              '-.|     '-.| |   |\n"
++ "                                `'                            '-._|\n"
++ "", "loss");
+      render();
+    };
+  </script>
+</body>
+</html>
